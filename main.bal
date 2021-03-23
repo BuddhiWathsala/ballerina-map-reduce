@@ -1,6 +1,7 @@
 import ballerina/io;
 import ballerina/regex;
 
+# Thread safe language model.
 class LanguageModel {
     map<int> frequencies = {};
     function addElement(string token) {
@@ -18,6 +19,7 @@ class LanguageModel {
     }
 }
 
+# Global language model instantiation.
 LanguageModel languageModel = new;
 
 public function main() returns error? {
@@ -30,6 +32,9 @@ public function main() returns error? {
 
 }
 
+# Process a given file and update the thread safe global language model.
+# + fileName - file name as a string
+# + return - error or null
 function processFile(string fileName) returns error? {
     stream<string, io:Error> corpusStream = check io:fileReadLinesAsStream(fileName);
     error? e = corpusStream.forEach(function(string line) {
@@ -43,6 +48,9 @@ function processFile(string fileName) returns error? {
                                     });
 }
 
+# Process a given file and create a new language model.
+# + fileName - file name as a string
+# + return - error or null
 function processEntireFile(string fileName) returns error? {
     stream<string, io:Error> corpusStream = check io:fileReadLinesAsStream(fileName);
     map<int> languageModel = {};
@@ -62,10 +70,15 @@ function processEntireFile(string fileName) returns error? {
     io:println(languageModel);
 }
 
+# Preprocess a given text.
+# + token - token string to be processed
+# + return - token after the processing
 function preprocessText(string token) returns string {
     return regex:replaceAll(token.toLowerAscii(), "[^a-zA-Z]+", "");
 }
 
+# Print a stream
+# + strm - stream
 function printStream(stream<anydata> strm) {
     error? e = strm.forEach(function(anydata val) {
                                 io:println(val);

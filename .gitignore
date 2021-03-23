@@ -1,4 +1,5 @@
 Dependencies.toml
 target/
 *.log
-resources/
+resources/raw_text.txt
+resources/all.txt
